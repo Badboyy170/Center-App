@@ -1,27 +1,37 @@
 import { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { login } from "src/firebase/authService";
+import { register } from "src/firebase/authService";
 import { useRouter } from "expo-router";
 import Swal from "sweetalert2";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Passwords do not match.",
+      });
+      return;
+    }
+
     try {
-      await login(email, password);
+      await register(email, password);
       Swal.fire({
         icon: "success",
-        title: "Login Successful",
-        text: "Welcome back!",
+        title: "Registration Successful",
+        text: "You can now log in.",
       });
-      router.replace("/(tabs)/home");
+      router.replace("/(auth)/login");
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Login Failed",
+        title: "Registration Failed",
         text: err.message || "An error occurred. Please try again.",
       });
     }
@@ -29,7 +39,7 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Create an Account</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -45,11 +55,19 @@ export default function Login() {
         secureTextEntry
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        placeholderTextColor="#aaa"
+        value={confirmPassword}
+        secureTextEntry
+        onChangeText={setConfirmPassword}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
-        <Text style={styles.linkText}>Don't have an account? Register</Text>
+      <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+        <Text style={styles.linkText}>Already have an account? Login</Text>
       </TouchableOpacity>
     </View>
   );
