@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { useRouter } from "expo-router";
 import Sidebar from "@/components/Sidebar";
 import { AddStudent, ManageStudents } from "@/components/Students";
+import { AddCenter, ManageCenters } from "@/components/Centers";
 import styles from "@/styles/homeStyles";
 
 export default function Home() {
@@ -21,6 +22,10 @@ export default function Home() {
         return <AddStudent />;
       case "Manage Students":
         return <ManageStudents />;
+      case "Add Center":
+        return <AddCenter />;
+      case "Manage Centers":
+        return <ManageCenters />;
       default:
         return <AddStudent />; // Default content can be changed as needed
     }

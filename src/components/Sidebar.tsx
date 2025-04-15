@@ -42,8 +42,44 @@ export default function Sidebar({
       </View>
       <TouchableOpacity
         style={styles.tab}
+        onPress={() => toggleSubOptions("Centers")}
+      >
+         
+        <View style={styles.tabWithArrow}>
+          <FaUsers className="icon" style={styles.icon} />
+          <Text style={styles.tabText}>Centers</Text>
+          <FaChevronDown
+            className="icon"
+            style={{
+              ...styles.arrow,
+              ...(expandedOption === "Centers" ? styles.arrowRotated : {}),
+            }}
+          />
+        </View>
+      </TouchableOpacity>
+            {expandedOption === "Centers" && (
+        <View style={styles.subOptions}>
+          <TouchableOpacity
+            style={[styles.subTab, activeTab === "Manage Centers" && styles.activeTab]}
+            onPress={() => setActiveTab("Manage Centers")}
+          >
+            <FaUser className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Manage Centers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.subTab, activeTab === "Add Center" && styles.activeTab]}
+            onPress={() => setActiveTab("Add Center")}
+          >
+            <FaPlus className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Add Center</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      <TouchableOpacity
+        style={styles.tab}
         onPress={() => toggleSubOptions("Students")}
       >
+         
         <View style={styles.tabWithArrow}>
           <FaUsers className="icon" style={styles.icon} />
           <Text style={styles.tabText}>Students</Text>
@@ -74,6 +110,7 @@ export default function Sidebar({
           </TouchableOpacity>
         </View>
       )}
+
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
