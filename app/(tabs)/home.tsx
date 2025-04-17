@@ -5,6 +5,8 @@ import Sidebar from "@/components/Sidebar";
 import { AddStudent, ManageStudents } from "@/components/Students";
 import { AddCenter, ManageCenters } from "@/components/Centers";
 import styles from "@/styles/homeStyles";
+import ManageGroups from "@/components/Groups/ManageGroups";
+import NewGroup from "@/components/Groups/NewGroup";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -26,23 +28,25 @@ export default function Home() {
         return <AddCenter />;
       case "Manage Centers":
         return <ManageCenters />;
+      case "Add Group":
+        return <NewGroup />;
+      case "Manage Groups":
+        return <ManageGroups />;
       default:
-        return <AddStudent />; // Default content can be changed as needed
+        return <NewGroup />; // Default content can be changed as needed
     }
   };
 
   return (
     <View style={styles.container}>
       <Sidebar
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      expandedOption={expandedOption}
-      setExpandedOption={setExpandedOption}
-      handleLogout={handleLogout}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        expandedOption={expandedOption}
+        setExpandedOption={setExpandedOption}
+        handleLogout={handleLogout}
       />
-      <View style={styles.main_wrapper}>
-      {renderContent()}
-      </View>
+      <View style={styles.main_wrapper}>{renderContent()}</View>
     </View>
   );
 }

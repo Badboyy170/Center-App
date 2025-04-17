@@ -1,5 +1,12 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { FaHome, FaCog, FaUser, FaUsers, FaPlus, FaChevronDown } from "react-icons/fa";
+import {
+  FaHome,
+  FaCog,
+  FaUser,
+  FaUsers,
+  FaPlus,
+  FaChevronDown,
+} from "react-icons/fa";
 import styles from "@/styles/homeStyles";
 
 interface SidebarProps {
@@ -29,7 +36,7 @@ export default function Sidebar({
       >
         <Text style={styles.minimizeButtonText}>{"<"}</Text>
       </TouchableOpacity>
-  
+
       <View style={styles.userInfo}>
         <View style={styles.profilePictureContainer}>
           <img
@@ -40,11 +47,11 @@ export default function Sidebar({
         </View>
         <Text style={styles.userName}>John Doe</Text>
       </View>
+
       <TouchableOpacity
         style={styles.tab}
         onPress={() => toggleSubOptions("Centers")}
       >
-         
         <View style={styles.tabWithArrow}>
           <FaUsers className="icon" style={styles.icon} />
           <Text style={styles.tabText}>Centers</Text>
@@ -57,17 +64,24 @@ export default function Sidebar({
           />
         </View>
       </TouchableOpacity>
-            {expandedOption === "Centers" && (
+
+      {expandedOption === "Centers" && (
         <View style={styles.subOptions}>
           <TouchableOpacity
-            style={[styles.subTab, activeTab === "Manage Centers" && styles.activeTab]}
+            style={[
+              styles.subTab,
+              activeTab === "Manage Centers" && styles.activeTab,
+            ]}
             onPress={() => setActiveTab("Manage Centers")}
           >
             <FaUser className="icon" style={styles.icon} />
             <Text style={styles.subTabText}>Manage Centers</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.subTab, activeTab === "Add Center" && styles.activeTab]}
+            style={[
+              styles.subTab,
+              activeTab === "Add Center" && styles.activeTab,
+            ]}
             onPress={() => setActiveTab("Add Center")}
           >
             <FaPlus className="icon" style={styles.icon} />
@@ -75,11 +89,11 @@ export default function Sidebar({
           </TouchableOpacity>
         </View>
       )}
+
       <TouchableOpacity
         style={styles.tab}
         onPress={() => toggleSubOptions("Students")}
       >
-         
         <View style={styles.tabWithArrow}>
           <FaUsers className="icon" style={styles.icon} />
           <Text style={styles.tabText}>Students</Text>
@@ -95,18 +109,66 @@ export default function Sidebar({
       {expandedOption === "Students" && (
         <View style={styles.subOptions}>
           <TouchableOpacity
-            style={[styles.subTab, activeTab === "Manage Students" && styles.activeTab]}
+            style={[
+              styles.subTab,
+              activeTab === "Manage Students" && styles.activeTab,
+            ]}
             onPress={() => setActiveTab("Manage Students")}
           >
             <FaUser className="icon" style={styles.icon} />
             <Text style={styles.subTabText}>Manage Students</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.subTab, activeTab === "Add Student" && styles.activeTab]}
+            style={[
+              styles.subTab,
+              activeTab === "Add Student" && styles.activeTab,
+            ]}
             onPress={() => setActiveTab("Add Student")}
           >
             <FaPlus className="icon" style={styles.icon} />
             <Text style={styles.subTabText}>Add Student</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity
+        style={styles.tab}
+        onPress={() => toggleSubOptions("Group")}
+      >
+        <View style={styles.tabWithArrow}>
+          <FaUsers className="icon" style={styles.icon} />
+          <Text style={styles.tabText}>Groups</Text>
+          <FaChevronDown
+            className="icon"
+            style={{
+              ...styles.arrow,
+              ...(expandedOption === "Group" ? styles.arrowRotated : {}),
+            }}
+          />
+        </View>
+      </TouchableOpacity>
+      
+      {expandedOption === "Group" && (
+        <View style={styles.subOptions}>
+          <TouchableOpacity
+            style={[
+              styles.subTab,
+              activeTab === "Manage Groups" && styles.activeTab,
+            ]}
+            onPress={() => setActiveTab("Manage Groups")}
+          >
+            <FaUser className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Manage Groups</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.subTab,
+              activeTab === "Add Group" && styles.activeTab,
+            ]}
+            onPress={() => setActiveTab("Add Group")}
+          >
+            <FaPlus className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Add group</Text>
           </TouchableOpacity>
         </View>
       )}
