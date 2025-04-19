@@ -9,11 +9,15 @@ export default function ManageGroups() {
   interface Group {
     id: string;
     name: string;
-    classRoom: number;
-    grade: string;
+    classRoom: string;
+    startTime: string;
+    endTime: string;
+    term: string;
+    centerId: string;
   }
 
   const [Groups, setGroups] = useState<Group[]>([]);
+  const [centers, setCenters] = useState<{ id: string; name: string }[]>([]);
 
   const fetchGroups = async () => {
     try {
@@ -21,12 +25,28 @@ export default function ManageGroups() {
       const GroupsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         name: doc.data().name || "",
-        classRoom: doc.data().classRoom || 0,
-        grade: doc.data().grade || "",
+        classRoom: doc.data().classRoom || "",
+        startTime: doc.data().startTime || "",
+        endTime: doc.data().endTime || "",
+        term: doc.data().term || "",
+        centerId: doc.data().centerId || "",
       })) as Group[];
       setGroups(GroupsData);
     } catch (error) {
       console.error("Error fetching groups: ", error);
+    }
+  };
+
+  const fetchCenters = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "centers"));
+      const centersData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name || "",
+      }));
+      setCenters(centersData);
+    } catch (error) {
+      console.error("Error fetching centers: ", error);
     }
   };
 
@@ -53,6 +73,7 @@ export default function ManageGroups() {
 
   useEffect(() => {
     fetchGroups();
+    fetchCenters();
   }, []);
 
   return (
@@ -64,21 +85,28 @@ export default function ManageGroups() {
         <FlatList
           data={Groups}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={forms.listItem}>
-              <View>
-                <Text style={forms.listItemTitle}>{item.name}</Text>
-                <Text>ClassRoom: {item.classRoom}</Text>
-                <Text>Grade: {item.grade}</Text>
+          renderItem={({ item }) => {
+            const centerName =
+              centers.find((center) => center.id === item.centerId)?.name || "Unknown";
+            return (
+              <View style={forms.listItem}>
+                <View>
+                  <Text style={forms.listItemTitle}>{item.name}</Text>
+                  <Text>Day of Group: {item.classRoom}</Text>
+                  <Text>Start Time: {item.startTime}</Text>
+                  <Text>End Time: {item.endTime}</Text>
+                  <Text>Term: {item.term}</Text>
+                  <Text>Center: {centerName}</Text>
+                </View>
+                <TouchableOpacity
+                  style={forms.deleteButton}
+                  onPress={() => handleDeleteGroup(item.id)}
+                >
+                  <Text style={forms.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={forms.deleteButton}
-                onPress={() => handleDeleteGroup(item.id)}
-              >
-                <Text style={forms.deleteButtonText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+            );
+          }}
         />
       )}
     </View>
