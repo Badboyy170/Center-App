@@ -4,9 +4,13 @@ import { useRouter } from "expo-router";
 import Sidebar from "@/components/Sidebar";
 import { AddStudent, ManageStudents } from "@/components/Students";
 import { AddCenter, ManageCenters } from "@/components/Centers";
+
 import styles from "@/styles/homeStyles";
 import ManageGroups from "@/components/Groups/ManageGroups";
 import NewGroup from "@/components/Groups/NewGroup";
+
+import { ManageExams } from "@/components/Exams";
+import AddExam from "@/components/Exams/addExam";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -32,6 +36,11 @@ export default function Home() {
         return <NewGroup />;
       case "Manage Groups":
         return <ManageGroups />;
+
+        case "Manage Exams":
+          return <ManageExams />;
+        case "Add Exam":
+          return <AddExam />;
       default:
         return <NewGroup />; // Default content can be changed as needed
     }

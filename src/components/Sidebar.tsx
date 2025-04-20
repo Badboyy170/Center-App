@@ -92,6 +92,47 @@ export default function Sidebar({
 
       <TouchableOpacity
         style={styles.tab}
+        onPress={() => toggleSubOptions("Exams")}
+      >
+        <View style={styles.tabWithArrow}>
+          <FaUsers className="icon" style={styles.icon} />
+          <Text style={styles.tabText}>Exams</Text>
+          <FaChevronDown
+            className="icon"
+            style={{
+              ...styles.arrow,
+              ...(expandedOption === "Exams" ? styles.arrowRotated : {}),
+            }}
+          />
+        </View>
+      </TouchableOpacity>
+      {expandedOption === "Exams" && (
+        <View style={styles.subOptions}>
+          <TouchableOpacity
+            style={[
+              styles.subTab,
+              activeTab === "Manage Exams" && styles.activeTab,
+            ]}
+            onPress={() => setActiveTab("Manage Exams")}
+          >
+            <FaUser className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Manage Exams</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.subTab,
+              activeTab === "Add Exam" && styles.activeTab,
+            ]}
+            onPress={() => setActiveTab("Add Exam")}
+          >
+            <FaPlus className="icon" style={styles.icon} />
+            <Text style={styles.subTabText}>Add Exam</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity
+        style={styles.tab}
         onPress={() => toggleSubOptions("Students")}
       >
         <View style={styles.tabWithArrow}>
@@ -147,7 +188,7 @@ export default function Sidebar({
           />
         </View>
       </TouchableOpacity>
-      
+
       {expandedOption === "Group" && (
         <View style={styles.subOptions}>
           <TouchableOpacity
