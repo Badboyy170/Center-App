@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { db } from "@/config/firebase";
 import { collection, addDoc } from "firebase/firestore";
@@ -6,10 +6,15 @@ import Swal from "sweetalert2";
 import forms from "@/styles/forms";
 import { FaUser, FaCalendarAlt, FaGraduationCap } from "react-icons/fa";
 
+import { Picker } from '@react-native-picker/picker';
+
+
 export default function AddExam() {
     const [name, setName] = useState("");
     const [groupNum, setGroupNum] = useState("");
     const [date, setDate] = useState("");
+
+    const[studyLevel , setStudyLevel] = useState("");
 
 
     const handleAddStudent = async () => {
@@ -57,10 +62,27 @@ export default function AddExam() {
                 <TextInput
                     style={forms.formInput}
                     placeholder="Exam Name"
+                    
                     value={name}
                     onChangeText={setName}
                 />
             </View>
+
+     <View style={forms.pickerContainer}>
+        <Picker
+            selectedValue={studyLevel}
+            onValueChange={(value : string) => setStudyLevel(value)}
+            style={forms.picker}
+        >
+            <Picker.Item label=" Study Level"  value="" />
+            {[...Array(10)].map((_, i) => {
+            const num = (i + 1).toString();
+            return <Picker.Item key={num} label={num} value={num} />;
+            })}
+        </Picker>
+    </View>
+
+     
             <View style={forms.inputContainer}>
                 <FaCalendarAlt style={forms.inputIcon} />
                 <TextInput
@@ -71,6 +93,7 @@ export default function AddExam() {
                     onChangeText={setGroupNum}
                 />
             </View>
+
             <View style={forms.inputContainer}>
                 <FaGraduationCap style={forms.inputIcon} />
                 <TextInput

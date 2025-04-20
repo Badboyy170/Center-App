@@ -90,4 +90,22 @@ export default StyleSheet.create({
     color: "#888",
     marginRight: 10,
   },
+
+  pickerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+  },
+  picker: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    width:'100%'
+  },
+ 
 });
