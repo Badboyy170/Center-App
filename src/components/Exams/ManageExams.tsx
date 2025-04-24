@@ -11,6 +11,7 @@ export default function ManageExams() {
     name: string;
     groupNum: number;
     date: string;
+    studyLvel :string;
   }
 
   const [exams, setStudents] = useState<Exam[]>([]);
@@ -23,6 +24,7 @@ export default function ManageExams() {
         name: doc.data().name || "",
         groupNum: doc.data().groupNum || 0,
         date: doc.data().date || "",
+        studyLvel :doc.data().studyLevel || 0 
       })) as Exam[];
       setStudents(studentsData);
     } catch (error) {
@@ -71,6 +73,7 @@ export default function ManageExams() {
                   <Text style={forms.listItemTitle}>Exam Name : {item.name}</Text>
                   <Text>Group Number: {item.groupNum}</Text>
                   <Text>Date: {item.date}</Text>
+                  <Text>Study Level:{item.studyLvel} </Text>
                 </View>
                 <TouchableOpacity
                   style={forms.deleteButton}

@@ -14,6 +14,8 @@ export default function ManageGroups() {
     endTime: string;
     term: string;
     centerId: string;
+    groupNumber:string;
+    studyLevel:string;
   }
 
   const [Groups, setGroups] = useState<Group[]>([]);
@@ -30,6 +32,8 @@ export default function ManageGroups() {
         endTime: doc.data().endTime || "",
         term: doc.data().term || "",
         centerId: doc.data().centerId || "",
+        groupNumber:doc.data().groupNumber  || "" ,
+        studyLevel:doc.data().studyLevel || ""
       })) as Group[];
       setGroups(GroupsData);
     } catch (error) {
@@ -95,6 +99,8 @@ export default function ManageGroups() {
                   <Text>Day of Group: {item.classRoom}</Text>
                   <Text>Start Time: {item.startTime}</Text>
                   <Text>End Time: {item.endTime}</Text>
+                  <Text>Group Number :{item.groupNumber}</Text>
+                  <Text>Study Level : {item.studyLevel}</Text>
                   <Text>Term: {item.term}</Text>
                   <Text>Center: {centerName}</Text>
                 </View>

@@ -13,6 +13,8 @@ export default function Addgroup() {
   const [selectedTerm, setSelectedTerm] = useState("");
   const [centers, setCenters] = useState<any[]>([]);  
   const [selectedCenter, setSelectedCenter] = useState(""); 
+  const[groupNumber , setGroupNumber] = useState("") ;
+  const[studyLevel , setStudyLevel] = useState("");
 
   const fetchCenters = async () => {
     try {
@@ -33,7 +35,7 @@ export default function Addgroup() {
   }, []);
 
   const handleAddgroup = async () => {
-    if (!name || !classRoom || !startTime || !endTime || !selectedTerm || !selectedCenter) {
+    if (!name || !classRoom || !startTime || !endTime || !selectedTerm || !selectedCenter || !groupNumber || !studyLevel) {
       Swal.fire({
         icon: "error",
         title: "Missing Fields",
@@ -51,6 +53,8 @@ export default function Addgroup() {
         endTime,
         term: selectedTerm,
         centerId: selectedCenter,  
+        groupNumber ,
+        studyLevel
       });
       Swal.fire({
         icon: "success",
@@ -64,6 +68,9 @@ export default function Addgroup() {
       setEndTime("");
       setSelectedTerm("");
       setSelectedCenter("");  
+      setGroupNumber("");
+      setStudyLevel("");
+      
     } catch (error) {
       console.error("Error adding group: ", error);
       Swal.fire({
@@ -143,6 +150,29 @@ export default function Addgroup() {
               placeholder="Group Day"
               value={classRoom}
               onChangeText={setClassRoom}
+              placeholderTextColor="#888"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <FaBuilding style={styles.inputIcon} />
+            <TextInput
+              style={styles.formInput}
+              placeholder="Group Number"
+              value={groupNumber}
+              onChangeText={setGroupNumber}
+              placeholderTextColor="#888"
+            />
+          </View>
+
+          
+          <View style={styles.inputContainer}>
+            <FaBuilding style={styles.inputIcon} />
+            <TextInput
+              style={styles.formInput}
+              placeholder="Study level"
+              value={studyLevel}
+              onChangeText={setStudyLevel}
               placeholderTextColor="#888"
             />
           </View>

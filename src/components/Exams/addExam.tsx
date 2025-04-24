@@ -13,12 +13,11 @@ export default function AddExam() {
     const [name, setName] = useState("");
     const [groupNum, setGroupNum] = useState("");
     const [date, setDate] = useState("");
-
     const[studyLevel , setStudyLevel] = useState("");
 
 
     const handleAddStudent = async () => {
-        if (!name || !groupNum || !date) {
+        if (!name || !groupNum || !date || !setStudyLevel) {
             Swal.fire({
                 icon: "error",
                 title: "Missing Fields",
@@ -33,6 +32,7 @@ export default function AddExam() {
                 name,
                 groupNum: parseInt(groupNum, 10),
                 date,
+                studyLevel
             });
             Swal.fire({
                 icon: "success",
@@ -43,6 +43,7 @@ export default function AddExam() {
             setName("");
             setGroupNum("");
             setDate("");
+            setStudyLevel("");
         } catch (error) {
             console.error("Error adding Exam: ", error);
             Swal.fire({
@@ -62,7 +63,7 @@ export default function AddExam() {
                 <TextInput
                     style={forms.formInput}
                     placeholder="Exam Name"
-                    
+
                     value={name}
                     onChangeText={setName}
                 />
@@ -74,7 +75,7 @@ export default function AddExam() {
             onValueChange={(value : string) => setStudyLevel(value)}
             style={forms.picker}
         >
-            <Picker.Item label=" Study Level"  value="" />
+            <Picker.Item label=" Study Level"  value={setStudyLevel} />
             {[...Array(10)].map((_, i) => {
             const num = (i + 1).toString();
             return <Picker.Item key={num} label={num} value={num} />;
