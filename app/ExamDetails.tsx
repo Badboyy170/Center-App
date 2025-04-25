@@ -14,7 +14,7 @@ export default function ExamDetails() {
   const [focusedFields, setFocusedFields] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
-  // Fetch the exam data
+  
   const fetchExam = async () => {
     try {
       const examRef = doc(db, "exams", id as string);
@@ -28,7 +28,7 @@ export default function ExamDetails() {
     }
   };
 
-  // Add a new student to the exam
+  
   const handleAddStudent = async () => {
     if (!newStudent.name || !newStudent.studentId || !newStudent.grade) {
       Swal.fire({ icon: "error", title: "Missing Fields", text: "Fill all student fields." });
@@ -49,7 +49,7 @@ export default function ExamDetails() {
     }
   };
 
-  // Delete a student from the exam
+  
   const handleDeleteStudent = async (studentId: string) => {
     const updatedStudents = students.filter(student => student.studentId !== studentId);
     try {
@@ -64,7 +64,7 @@ export default function ExamDetails() {
     }
   };
 
-  // Update a student's data
+   
   const handleUpdateStudent = async () => {
     const updatedStudents = students.map(student => {
       if (student.studentId === editingStudent.studentId) {
@@ -87,7 +87,7 @@ export default function ExamDetails() {
     }
   };
 
-  // Start editing a student's data
+ 
   const startEditing = (student: any) => {
     setEditingStudent({ ...student });
     setFocusedFields(["name", "studentId", "grade"]);
@@ -97,7 +97,7 @@ export default function ExamDetails() {
     setFocusedFields(prevFields => [...prevFields, field]);
   };
 
-  // Filter students based on search query
+   
   const filteredStudents = students.filter(student => {
     return (
       student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -113,9 +113,9 @@ export default function ExamDetails() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}>
       <View style={forms.formContainer}>
-        {/* Search Bar */}
+       
         <TextInput
-          style={[forms.formInput, { marginBottom: 5, height: 35 }]}
+          style={[forms.formInput, { marginBottom: 10, height: 35 }]}
           placeholder="Search by Name, ID or Grade"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -128,7 +128,7 @@ export default function ExamDetails() {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={[forms.listItem, { marginBottom: 8 }]}>
-              {/* Student Name */}
+               
               <View style={forms.fieldContainer}>
                 <Text style={[forms.fieldTitle, { fontSize: 14 }]}>Name</Text>
                 <TextInput
@@ -144,7 +144,7 @@ export default function ExamDetails() {
                 />
               </View>
 
-              {/* Student ID */}
+               
               <View style={forms.fieldContainer}>
                 <Text style={[forms.fieldTitle, { fontSize: 14 }]}>ID</Text>
                 <TextInput
@@ -160,7 +160,7 @@ export default function ExamDetails() {
                 />
               </View>
 
-              {/* Grade */}
+            
               <View style={forms.fieldContainer}>
                 <Text style={[forms.fieldTitle, { fontSize: 14 }]}>Grade</Text>
                 <TextInput
@@ -176,7 +176,7 @@ export default function ExamDetails() {
                 />
               </View>
 
-              {/* Update student */}
+               
               {editingStudent && editingStudent.studentId === item.studentId ? (
                 <TouchableOpacity
                   style={[
@@ -199,7 +199,7 @@ export default function ExamDetails() {
                 </TouchableOpacity>
               )}
 
-              {/* Delete student button */}
+           
               <TouchableOpacity
                 style={[
                   forms.formButton,
