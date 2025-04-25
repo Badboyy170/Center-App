@@ -1,3 +1,4 @@
+import { FaBold } from "react-icons/fa";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -107,5 +108,16 @@ export default StyleSheet.create({
     borderColor: '#ccc',
     width:'100%'
   },
+  fieldContainer:{
+    marginBottom :15 ,
+    padding :10 ,
+  },
+
+  fieldTitle:{
+    fontSize :16 ,
+    fontWeight : 900 ,
+    color :"#333" ,
+    marginBottom :5
+  }
  
 });

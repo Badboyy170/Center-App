@@ -4,6 +4,7 @@ import { db } from "@/config/firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import forms from "@/styles/forms";
+import { router } from "expo-router";
 
 export default function ManageExams() {
   interface Exam {
@@ -11,50 +12,40 @@ export default function ManageExams() {
     name: string;
     groupNum: number;
     date: string;
-    studyLvel :string;
+    studyLevel: string;
   }
 
-  const [exams, setStudents] = useState<Exam[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
 
-  const fetchStudents = async () => {
+  const fetchExams = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "exams"));
-      const studentsData = querySnapshot.docs.map((doc) => ({
+      const examsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         name: doc.data().name || "",
         groupNum: doc.data().groupNum || 0,
         date: doc.data().date || "",
-        studyLvel :doc.data().studyLevel || 0 
+        studyLevel: doc.data().studyLevel || "",
       })) as Exam[];
-      setStudents(studentsData);
+      setExams(examsData);
     } catch (error) {
       console.error("Error fetching exams: ", error);
     }
   };
 
-  const handleDeleteStudent = async (id: string) => {
+  const handleDeleteExam = async (id: string) => {
     try {
       await deleteDoc(doc(db, "exams", id));
-      Swal.fire({
-        icon: "success",
-        title: "Deleted",
-        text: "Exam deleted successfully!",
-        position: "center",
-      });
-      setStudents((prev) => prev.filter((student) => student.id !== id));
+      Swal.fire({ icon: "success", title: "Deleted", text: "Exam deleted successfully!" });
+      setExams((prev) => prev.filter((exam) => exam.id !== id));
     } catch (error) {
       console.error("Error deleting Exam: ", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to delete Exam.",
-        position: "center",
-      });
+      Swal.fire({ icon: "error", title: "Error", text: "Failed to delete Exam." });
     }
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchExams();
   }, []);
 
   return (
@@ -67,17 +58,17 @@ export default function ManageExams() {
           data={exams}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/ExamDetails", params: { id: item.id } })}>
               <View style={forms.listItem}>
                 <View>
-                  <Text style={forms.listItemTitle}>Exam Name : {item.name}</Text>
+                  <Text style={forms.listItemTitle}>Exam Name: {item.name}</Text>
                   <Text>Group Number: {item.groupNum}</Text>
                   <Text>Date: {item.date}</Text>
-                  <Text>Study Level:{item.studyLvel} </Text>
+                  <Text>Study Level: {item.studyLevel}</Text>
                 </View>
                 <TouchableOpacity
                   style={forms.deleteButton}
-                  onPress={() => handleDeleteStudent(item.id)}
+                  onPress={() => handleDeleteExam(item.id)}
                 >
                   <Text style={forms.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
