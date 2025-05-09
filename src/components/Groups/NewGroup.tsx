@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Picker } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { db } from "@/config/firebase";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
-import { FaUser, FaCalendarAlt, FaClock, FaBuilding } from "react-icons/fa";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Picker } from '@react-native-picker/picker';
 
 export default function Addgroup() {
   const [name, setName] = useState("");
-  const [classRoom, setClassRoom] = useState("");
+  const [groupDay, setGroupDay] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [selectedTerm, setSelectedTerm] = useState("");
-  const [centers, setCenters] = useState<any[]>([]);  
-  const [selectedCenter, setSelectedCenter] = useState(""); 
-  const[groupNumber , setGroupNumber] = useState("") ;
-  const[studyLevel , setStudyLevel] = useState("");
+  const [centers, setCenters] = useState<any[]>([]);
+  const [selectedCenter, setSelectedCenter] = useState("");
+  const [groupNumber, setGroupNumber] = useState("");
+  const [studyLevel, setStudyLevel] = useState("");
+  const [grades, setGrades] = useState<any[]>([]);
+  const [selectedGrade, setSelectedGrade] = useState("");
 
   const fetchCenters = async () => {
     try {
@@ -30,12 +33,26 @@ export default function Addgroup() {
     }
   };
 
+  const fetchGrades = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "grades"));
+      const gradesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name || "",
+      }));
+      setGrades(gradesData);
+    } catch (error) {
+      console.error("Error fetching grades: ", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCenters();  
+    fetchCenters();
+    fetchGrades();
   }, []);
 
   const handleAddgroup = async () => {
-    if (!name || !classRoom || !startTime || !endTime || !selectedTerm || !selectedCenter || !groupNumber || !studyLevel) {
+    if (!name || !groupDay || !startTime || !endTime || !selectedCenter || !selectedGrade) {
       Swal.fire({
         icon: "error",
         title: "Missing Fields",
@@ -48,13 +65,11 @@ export default function Addgroup() {
     try {
       await addDoc(collection(db, "groups"), {
         name,
-        classRoom,
+        groupDay,
         startTime,
         endTime,
-        term: selectedTerm,
-        centerId: selectedCenter,  
-        groupNumber ,
-        studyLevel
+        centerId: selectedCenter,
+        gradeId: selectedGrade,
       });
       Swal.fire({
         icon: "success",
@@ -63,14 +78,11 @@ export default function Addgroup() {
         position: "center",
       });
       setName("");
-      setClassRoom("");
+      setGroupDay("");
       setStartTime("");
       setEndTime("");
-      setSelectedTerm("");
-      setSelectedCenter("");  
-      setGroupNumber("");
-      setStudyLevel("");
-      
+      setSelectedCenter("");
+      setSelectedGrade("");
     } catch (error) {
       console.error("Error adding group: ", error);
       Swal.fire({
@@ -82,10 +94,15 @@ export default function Addgroup() {
     }
   };
 
-  const termOptions = [
-    { id: 'first_prep', label: 'First Preparatory' },
-    { id: 'second_prep', label: 'Second Preparatory' },
-    { id: 'third_prep', label: 'Third Preparatory' }
+  const daysOfWeek = [
+    { value: "", label: "Select Day" },
+    { value: "Saturday", label: "Saturday" },
+    { value: "Sunday", label: "Sunday" },
+    { value: "Monday", label: "Monday" },
+    { value: "Tuesday", label: "Tuesday" },
+    { value: "Wednesday", label: "Wednesday" },
+    { value: "Thursday", label: "Thursday" },
+    { value: "Friday", label: "Friday" },
   ];
 
   return (
@@ -95,7 +112,7 @@ export default function Addgroup() {
           <Text style={styles.formTitle}>Add New Group</Text>
 
           <View style={styles.inputContainer}>
-            <FaUser style={styles.inputIcon} />
+            <Icon name="user" style={styles.inputIcon} />
             <TextInput
               style={styles.formInput}
               placeholder="Group Name"
@@ -105,32 +122,22 @@ export default function Addgroup() {
             />
           </View>
 
-          <View style={styles.termContainer}>
-            <Text style={styles.termTitle}>Select Term:</Text>
-            {termOptions.map((term) => (
-              <TouchableOpacity
-                key={term.id}
-                style={[
-                  styles.termOption,
-                  selectedTerm === term.id && styles.selectedTerm
-                ]}
-                onPress={() => setSelectedTerm(term.id)}
-              >
-                <Text
-                  style={[
-                    styles.termText,
-                    selectedTerm === term.id && styles.selectedTermText
-                  ]}
-                >
-                  {selectedTerm === term.id ? '✓ ' : ''}{term.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          <View style={styles.inputContainer}>
+            <Icon name="graduation-cap" style={styles.inputIcon} />
+            <Picker
+              selectedValue={selectedGrade}
+              onValueChange={(itemValue) => setSelectedGrade(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Grade" value="" />
+              {grades.map((grade) => (
+                <Picker.Item key={grade.id} label={grade.name} value={grade.id} />
+              ))}
+            </Picker>
           </View>
 
-          {/* Add center selection dropdown */}
           <View style={styles.inputContainer}>
-            <FaBuilding style={styles.inputIcon} />
+            <Icon name="building" style={styles.inputIcon} />
             <Picker
               selectedValue={selectedCenter}
               onValueChange={(itemValue) => setSelectedCenter(itemValue)}
@@ -144,43 +151,22 @@ export default function Addgroup() {
           </View>
 
           <View style={styles.inputContainer}>
-            <FaBuilding style={styles.inputIcon} />
-            <TextInput
-              style={styles.formInput}
-              placeholder="Group Day"
-              value={classRoom}
-              onChangeText={setClassRoom}
-              placeholderTextColor="#888"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <FaBuilding style={styles.inputIcon} />
-            <TextInput
-              style={styles.formInput}
-              placeholder="Group Number"
-              value={groupNumber}
-              onChangeText={setGroupNumber}
-              placeholderTextColor="#888"
-            />
-          </View>
-
-          
-          <View style={styles.inputContainer}>
-            <FaBuilding style={styles.inputIcon} />
-            <TextInput
-              style={styles.formInput}
-              placeholder="Study level"
-              value={studyLevel}
-              onChangeText={setStudyLevel}
-              placeholderTextColor="#888"
-            />
+            <Icon name="calendar" style={styles.inputIcon} />
+            <Picker
+              selectedValue={groupDay}
+              onValueChange={(itemValue) => setGroupDay(itemValue)}
+              style={styles.picker}
+            >
+              {daysOfWeek.map((day) => (
+                <Picker.Item key={day.value} label={day.label} value={day.value} />
+              ))}
+            </Picker>
           </View>
 
           <View style={styles.termContainer}>
-            <View >
+            <View>
               <View>
-                <FaClock style={styles.inputIcon} />
+                <Icon name="clock-o" style={styles.inputIcon} />
                 <TextInput
                   placeholder="Start Time"
                   value={startTime}
@@ -192,7 +178,7 @@ export default function Addgroup() {
 
             <View>
               <View>
-                <FaClock style={styles.inputIcon} />
+                <Icon name="clock-o" style={styles.inputIcon} />
                 <TextInput
                   placeholder="End Time"
                   value={endTime}
