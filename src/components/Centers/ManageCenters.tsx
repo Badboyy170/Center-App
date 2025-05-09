@@ -44,7 +44,7 @@ export default function ManageCenters() {
     }
   };
 
-  // Fetch groups and studentGroups for student counting
+
   const fetchGroupsAndStudentGroups = async () => {
     try {
       const groupsSnap = await getDocs(collection(db, "groups"));
@@ -62,7 +62,7 @@ export default function ManageCenters() {
         }))
       );
     } catch (error) {
-      // ignore
+      
     }
   };
 
@@ -112,20 +112,20 @@ export default function ManageCenters() {
     setEditValues({});
   };
 
-  // Responsive item width and layout
+
   const windowWidth = Dimensions.get("window").width;
   const isSmallScreen = windowWidth < 600;
-  const itemWidth = isSmallScreen ? windowWidth - 40 : (windowWidth - 80) / 4; // col-12 on phone, col-4 on desktop
+  const itemWidth = isSmallScreen ? windowWidth - 40 : (windowWidth - 80) / 4; 
 
-  // Helper: get total students in a center by summing unique students in all its groups
+  
   const getTotalStudentsForCenter = (centerId: string) => {
-    // Find all group IDs for this center
+  
     const groupIds = groups.filter(g => g.centerId === centerId).map(g => g.id);
-    // Find all studentIds in these groups
+    
     const studentIds = studentGroups
       .filter(sg => groupIds.includes(sg.groupId))
       .map(sg => sg.studentId);
-    // Unique student count
+   
     return Array.from(new Set(studentIds)).length;
   };
 
