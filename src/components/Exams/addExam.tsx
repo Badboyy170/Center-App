@@ -1,46 +1,63 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, Text, TouchableOpacity } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, Platform, Dimensions, ScrollView } from "react-native";
 import { db } from "@/config/firebase";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
 import Swal from "sweetalert2";
 import forms from "@/styles/forms";
 import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function AddExam() {
   const [name, setName] = useState("");
-  const [studyLevel, setStudyLevel] = useState<string>("");
-  const [groupNumbers, setGroupNumbers] = useState<number[]>([]);
-  const [selectedGroupNumber, setSelectedGroupNumber] = useState<number | null>(null);
-  const [date, setDate] = useState("");
+  const [grades, setGrades] = useState<{ id: string; name: string }[]>([]);
+  const [selectedGrade, setSelectedGrade] = useState<string>("");
+  const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string>("");
+  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [score, setScore] = useState<string>("");
 
-  const fetchGroupNumbers = async (level: string) => {
-    try {
-      const q = query(collection(db, "groups"), where("studyLevel", "==", level));
-      const snap = await getDocs(q);
-      const nums = snap.docs.map((d) => d.data().groupNumber as number);
-      setGroupNumbers(nums);
-      setSelectedGroupNumber(null);
-    } catch (err) {
-      console.error("Error fetching group numbers:", err);
-    }
-  };
-
+  // Fetch grades on mount
   useEffect(() => {
-    if (studyLevel) fetchGroupNumbers(studyLevel);
+    const fetchGrades = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "grades"));
+        const gradesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name || "",
+        }));
+        setGrades(gradesData);
+      } catch (error) {
+        console.error("Error fetching grades: ", error);
+      }
+    };
+    fetchGrades();
+  }, []);
+
+  // Fetch groups when grade changes
+  useEffect(() => {
+    const fetchGroups = async (gradeId: string) => {
+      try {
+        const q = query(collection(db, "groups"), where("gradeId", "==", gradeId));
+        const snap = await getDocs(q);
+        const groupsData = snap.docs.map((d) => ({
+          id: d.id,
+          name: d.data().name || "",
+        }));
+        setGroups(groupsData);
+        setSelectedGroup("");
+      } catch (err) {
+        console.error("Error fetching groups:", err);
+      }
+    };
+    if (selectedGrade) fetchGroups(selectedGrade);
     else {
-      setGroupNumbers([]);
-      setSelectedGroupNumber(null);
+      setGroups([]);
+      setSelectedGroup("");
     }
-  }, [studyLevel]);
+  }, [selectedGrade]);
 
   const handleAddExam = async () => {
-    if (!name || !studyLevel || !selectedGroupNumber || !date) {
+    if (!name || !selectedGrade || !selectedGroup || !date || !score) {
       Swal.fire({ icon: "error", title: "Missing Fields", text: "Please fill in all fields." });
       return;
     }
@@ -48,50 +65,102 @@ export default function AddExam() {
     try {
       await addDoc(collection(db, "exams"), {
         name,
-        studyLevel,
-        groupNum: selectedGroupNumber,
-        date,
+        gradeId: selectedGrade,
+        groupId: selectedGroup,
+        date: date,
+        score: Number(score),
         students: [],
       });
       Swal.fire({ icon: "success", title: "Exam Added", text: "Exam added successfully!" });
       setName("");
-      setStudyLevel("");
-      setGroupNumbers([]);
-      setSelectedGroupNumber(null);
+      setSelectedGrade("");
+      setGroups([]);
+      setSelectedGroup("");
       setDate("");
+      setScore("");
     } catch (error) {
       console.error("Error adding Exam: ", error);
       Swal.fire({ icon: "error", title: "Error", text: "Failed to add Exam." });
     }
   };
 
+  // Responsive layout
+  const windowWidth = Dimensions.get("window").width;
+  const isSmallScreen = windowWidth < 600;
+  const containerStyle = {
+    ...forms.formContainer,
+    margin: isSmallScreen ? 8 : 20,
+    padding: isSmallScreen ? 10 : 20,
+    borderRadius: 10,
+    minWidth: isSmallScreen ? undefined : 350,
+    maxWidth: isSmallScreen ? "100%" : 500,
+    alignSelf: "center",
+  };
+
   return (
-    <View style={forms.formContainer}>
-      <Text style={forms.formTitle}>Add Exam</Text>
-      <TextInput style={forms.formInput} placeholder="Exam Name" value={name} onChangeText={setName} />
-      <Picker selectedValue={studyLevel} onValueChange={value => setStudyLevel(value)} style={forms.picker}>
-        <Picker.Item label="Study Level" value="" />
-        {[...Array(10)].map((_, i) => {
-          const num = (i + 1).toString();
-          return <Picker.Item key={num} label={num} value={num} />;
-        })}
-      </Picker>
-      {groupNumbers.length > 0 && (
-        <Picker
-          selectedValue={selectedGroupNumber}
-          onValueChange={(value: number) => setSelectedGroupNumber(value)}
-          style={forms.picker}
-        >
-          <Picker.Item label="Group Number" value={null} />
-          {groupNumbers.map((n) => (
-            <Picker.Item key={n} label={n.toString()} value={n} />
-          ))}
-        </Picker>
-      )}
-      <TextInput style={forms.formInput} placeholder="Date" value={date} onChangeText={setDate} />
-      <TouchableOpacity style={forms.formButton} onPress={handleAddExam}>
-        <Text style={forms.formButtonText}>Add Exam</Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={containerStyle}>
+        <Text style={forms.formTitle}>Add Exam</Text>
+        <View style={forms.inputContainer}>
+          <Icon name="file-document-edit-outline" size={20} style={forms.inputIcon} />
+          <TextInput
+            style={forms.formInput}
+            placeholder="Exam Name"
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+        <View style={forms.inputContainer}>
+          <Icon name="school-outline" size={20} style={forms.inputIcon} />
+          <Picker
+            selectedValue={selectedGrade}
+            onValueChange={value => setSelectedGrade(value)}
+            style={forms.picker}
+          >
+            <Picker.Item label="Select Grade" value="" />
+            {grades.map((g) => (
+              <Picker.Item key={g.id} label={g.name} value={g.id} />
+            ))}
+          </Picker>
+        </View>
+        {groups.length > 0 && (
+          <View style={forms.inputContainer}>
+            <Icon name="account-group" size={20} style={forms.inputIcon} />
+            <Picker
+              selectedValue={selectedGroup}
+              onValueChange={(value: string) => setSelectedGroup(value)}
+              style={forms.picker}
+            >
+              <Picker.Item label="Select Group" value="" />
+              {groups.map((g) => (
+                <Picker.Item key={g.id} label={g.name} value={g.id} />
+              ))}
+            </Picker>
+          </View>
+        )}
+        <View style={forms.inputContainer}>
+          <Icon name="calendar" size={20} style={forms.inputIcon} />
+          <TextInput
+            style={forms.formInput}
+            placeholder="YYYY-MM-DD"
+            value={date || new Date().toISOString().split("T")[0]}
+            onChangeText={setDate}
+          />
+        </View>
+        <View style={forms.inputContainer}>
+          <Icon name="star" size={20} style={forms.inputIcon} />
+          <TextInput
+            style={forms.formInput}
+            placeholder="Exam Score"
+            value={score}
+            onChangeText={setScore}
+            keyboardType="numeric"
+          />
+        </View>
+        <TouchableOpacity style={forms.formButton} onPress={handleAddExam}>
+          <Text style={forms.formButtonText}>Add Exam</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
