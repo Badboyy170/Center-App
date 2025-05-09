@@ -17,6 +17,7 @@ export default ({ config }) => ({
         foregroundImage: "./src/assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
+      package: "com.anonymous.CenterApp"
     },
     web: {
       bundler: "metro",
@@ -34,6 +35,9 @@ export default ({ config }) => ({
           backgroundColor: "#ffffff",
         },
       ],
+ 
+      
+
     ],
     experiments: {
       typedRoutes: true,
@@ -45,6 +49,9 @@ export default ({ config }) => ({
       FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
       FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
       FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+      eas: {
+        "projectId": "ca53bc9c-70e3-4564-bd1c-f796c54ee36e"
+      }
     },
   },
 });
