@@ -9,6 +9,7 @@ export default StyleSheet.create({
     maxHeight: 500,
     minHeight: 450,
     borderRadius: 8,
+    margin: 20,
   },
   formTitle: {
     fontSize: 24,
@@ -26,15 +27,17 @@ export default StyleSheet.create({
     margin: 0,
   },
   formButton: {
-    height: 50,
+    height: 36, // reduced from 50
     backgroundColor: "#007bff",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 6, // added for smaller button
+    paddingHorizontal: 12, // added for smaller button
   },
   formButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14, // reduced from 16
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -68,13 +71,18 @@ export default StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: "#e74c3c",
-    padding: 10,
+    padding: 8, // reduced from 10
     borderRadius: 8,
+    minHeight: 32, // ensure touchable area
+    minWidth: 60,
+    justifyContent: "center",
+    alignItems: "center",
   },
   deleteButtonText: {
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center",
+    fontSize: 13, // smaller
   },
   inputContainer: {
     flexDirection: "row",
@@ -118,6 +126,92 @@ export default StyleSheet.create({
     fontWeight : 900 ,
     color :"#333" ,
     marginBottom :5
+  },
+// Add missing styles for ManageGrades
+  textInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    marginRight: 8,
+  },
+  editButton: {
+    backgroundColor: "#f1c40f",
+    padding: 8, // reduced from 10
+    borderRadius: 8,
+    marginLeft: 8,
+    minHeight: 32,
+    minWidth: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  editButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 13,
+  },
+  saveButton: {
+    backgroundColor: "#27ae60",
+    padding: 8, // reduced from 10
+    borderRadius: 8,
+    marginLeft: 8,
+    minHeight: 32,
+    minWidth: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 13,
+  },
+  cancelButton: {
+    backgroundColor: "#95a5a6",
+    padding: 8, // reduced from 10
+    borderRadius: 8,
+    marginLeft: 8,
+    minHeight: 32,
+    minWidth: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cancelButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 13,
+  },
+  searchInput: {
+    height: 40,
+    paddingHorizontal: 16,
+    backgroundColor: "#f1f3f6",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#b0b7c3",
+    marginBottom: 16,
+    fontSize: 15,
+    color: "#222",
+  },
+  submitButton: {
+    height: 36,
+    backgroundColor: "#28a745",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginTop: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
   }
  
 });
